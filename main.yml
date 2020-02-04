@@ -148,7 +148,7 @@
     command: postgresql-setup initdb
 #  - name: initilize postgres some more
 #    command: chkconfig postgresql on
-		fail_when: false
+    fail_when: false
 
   - name: start postgres
     service:
