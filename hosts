@@ -1,17 +1,17 @@
 [frontends] 
-frontend1 ansible_host=frontend1."{{ GUID }}".internal
+frontend1 ansible_host=frontend1.d4eb.example.opentlc.com
 
 [apps] 
-app1 ansible_host=app1."{{ GUID }}".internal
-app2 ansible_host=app2."{{ GUID }}".internal
+app1 ansible_host=app1.d4eb.example.opentlc.com
+app2 ansible_host=app2.d4eb.example.opentlc.com
 
 [appdbs] 
-appdb1 ansible_host=appdb1."{{ GUID }}".internal
+appdb1 ansible_host=appdb1.d4eb.example.opentlc.com
 
-[internal:children]
+[example.opentlc.com:children]
 frontends
 apps
 appdbs
 
-[internal:vars]
+[example.opentlc.com:vars]
 GUID="{{ lookup('env', 'GUID') }}"

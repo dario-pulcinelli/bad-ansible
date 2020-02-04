@@ -23,7 +23,7 @@
     template:
       src: ./open_three-tier-app.repo
       dest: /etc/yum.repos.d/open_three-tier-app.repo
-      mode: 0644
+      mode: "0644"
 
 - name: deploy haproxy
   hosts: frontends
@@ -87,29 +87,46 @@
   hosts: app1
   gather_facts: false
   become: true
-
   tasks:
+
+  - name: create webapps/ansible directory
+    file: 
+      path: /usr/share/tomcat/webapps/ansible
+      state: directory
+      owner: root
+      group: root
+      mode: 0755
+
   - name: copy static index.html to tomcat webapps/ansible/index.html
     template:
       src: index.html.app1
       dest: /usr/share/tomcat/webapps/ansible/index.html
 
-- name: index.html on app 1
+- name: index.html on app 2
   hosts: app2
   gather_facts: false
   become: true
 
   tasks:
+
+  - name: create webapps/ansible directory
+    file: 
+      path: /usr/share/tomcat/webapps/ansible
+      state: directory
+      owner: root
+      group: root
+      mode: 0755
+
   - name: copy static index.html to tomcat webapps/ansible/index.html
     template:
       src: index.html.app2
       dest: /usr/share/tomcat/webapps/ansible/index.html
 
 - name: deploy postgres
-  hosts: apps
+  hosts: apps appdbs
   gather_facts: false
   become: true
-  hosts: appdbs
+  #hosts: appdbs
   tasks:
   - name: install progress
     command: "yum install -y postgresql-server"
@@ -127,10 +144,12 @@
       msg: "Either uncomment the postgres setup or manually login and initialize"
 
  # only run the next 2 tasks once!
-#  - name: initilize postgres
-#    command: postgresql-setup initdb
+  - name: initilize postgres
+    command: postgresql-setup initdb
 #  - name: initilize postgres some more
 #    command: chkconfig postgresql on
+		fail_when: false
+
   - name: start postgres
     service:
       name: postgresql.service
@@ -140,7 +159,7 @@
   hosts: apps
   gather_facts: false
   become: true
-  hosts: apps
+  # hosts: apps
   tasks:
   - name: install apache
     yum:
